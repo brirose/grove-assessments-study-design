@@ -28,7 +28,8 @@ fire <- vect(here("data/spatial_data/cbi_all/cbi_all.shp")) %>%
 no_fire <- read_sf(here("data/spatial_data/no_fire/no_fire.shp")) %>%
   st_transform(crs(groves))
 
-plots_sf <- st_read(here("data/spatial_data/all_plots_groves.shp"))
+plots_sf <- st_read(here("data/spatial_data/fuelsplots_29Jul26/fuelsplots_29Jul26.shp"))%>%
+  st_transform(crs(groves))
 
 access <- read.csv(here("data/grove_access.csv"))
 
@@ -139,7 +140,7 @@ plots_classified <- plots_all %>%
     count_v2 = case_when(burnsev == "Unburned" ~ "none", T ~ count),
     strata_nm = paste(aspect,"-",time_since,"-",burnsev,"-",count_v2, sep = ""))
 
-write_csv(plots_classified, here("outputs/classifiedExisitingPlots.csv"))
+write_csv(plots_classified, here("outputs/classifiedPlacedPlots.csv"))
 #
 # pc = plots_classified %>%
 #   filter(aspect == "SE_W" & time_since == "under5" & burnsev == "Low" &
@@ -282,7 +283,7 @@ avail_poly
 # View(sliver_removal)
 grove_area-sum(avail_poly$area_ha)
 
-write_sf(avail_poly, here("outputs/avail_polys_no2haTotal_no05haSlivers_06June2025.shp"))
+#write_sf(avail_poly, here("outputs/avail_polys_no2haTotal_no05haSlivers_06June2025.shp"))
 #excluded by sliver size:
 #for 2 ha, exclude 1893
 #for 1 ha exclude 1394
@@ -326,7 +327,7 @@ existing.plots.area.per.strata
 
 # write_sf(existing.plots.area.per.strata, here("data/spatial_data/outputs/groveset_strata_all_w_existing_plots.shp"))
 
-write.csv(existing.plots.area.per.strata_lookup, here("outputs/existing_plots_and_area_per_strata.csv"))
+#write.csv(existing.plots.area.per.strata_lookup, here("outputs/existing_plots_and_area_per_strata.csv"))
 
 
 ########################################################################
@@ -353,7 +354,7 @@ sum(final.strata.that.need.new.plots$NEW.plots.needed)
 sum(final.strata.that.need.new.plots$NEW.plots.needed)+sum(final.strata.that.need.new.plots$useful.plots)
 
 final.strata.that.need.new.plots_lookup = st_drop_geometry(final.strata.that.need.new.plots)
-write.csv(final.strata.that.need.new.plots_lookup, here("outputs/final.strat.that.need.new.plots_06June2025.csv"))
+#write.csv(final.strata.that.need.new.plots_lookup, here("outputs/final.strat.that.need.new.plots_06June2025.csv"))
 
 # write_sf(final.strata.that.need.new.plots, here("data/spatial_data/outputs/final.strata.that.need.new.plots_06June2025.shp"))
 

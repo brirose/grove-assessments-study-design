@@ -28,7 +28,7 @@ ga_25 <- st_read(here("data/spatial_data/GAFieldPlots2025_DecExport/GAFieldPlots
   clean_names() |>
   filter(!str_detect(plot_id, "P$")) |>
   mutate(yr_nstl = 2025, 
-         plt_typ = "Grove Assessment",
+         plt_typ = str_extract(plot_id, "(?<=-).+(?=-)"),
          grov_nm = str_remove(plot_id, "-.+"),
          src = "arrow") %>% 
   select(plot_id, grov_nm, plt_typ, yr_nstl, src) |> 
@@ -45,9 +45,19 @@ all_ga <- fuelsplots_all|>
   group_by(plot_id) |>
   slice_head()
 
-st_write(all_ga, here("data/spatial/fuelsplots_most_needsdupsandEndof2025_17Dec25.shp"), append = F)
+summary25 <- all_ga |>
+  filter(yr_installed == 2025) |>
+  ungroup() |>
+  st_drop_geometry() |>
+  summarise(.by=c(grove_name, plot_type, yr_installed), count = n())|>
+  adorn_totals(where = "row")
 
-# NEED TO MANAGE DUPLICATES
+#NOTE: missing remo plant 2025, one EFR plot labeled as ATWE
+
+st_write(all_ga, here("data/spatial_data/fuelsplots_missingREMOPLANT25_Endof2025_18Dec25.shp"), append = F)
+
+
+
 
 reme_all <- all_ga |>
   filter(str_detect(plot_id, "REME")) |> 
